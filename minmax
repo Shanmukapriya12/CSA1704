@@ -1,0 +1,17 @@
+def minimax(depth, nodeIndex, isMax, scores):
+    if depth == 3:  # Leaf node reached
+        return scores[nodeIndex]
+
+    if isMax:
+        return max(minimax(depth+1, nodeIndex*2, False, scores),
+                   minimax(depth+1, nodeIndex*2 + 1, False, scores))
+    else:
+        return min(minimax(depth+1, nodeIndex*2, True, scores),
+                   minimax(depth+1, nodeIndex*2 + 1, True, scores))
+
+# Example leaf nodes for a binary tree
+scores = [3, 5, 6, 9, 1, 2, 0, -1]
+
+# Start from root (depth=0, index=0, maximizer's turn)
+best_score = minimax(0, 0, True, scores)
+print("Best score for maximizer:", best_score)
