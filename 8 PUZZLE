@@ -1,0 +1,27 @@
+import heapq
+
+goal = '123456780'
+def h(s): return sum(abs(i//3 - s.index(str(i))//3) + abs(i%3 - s.index(str(i))%3) for i in range(1,9))
+def neighbors(s):
+    i = s.index('0'); x, y = i//3, i%3; res = []
+    for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
+        nx, ny = x+dx, y+dy
+        if 0<=nx<3 and 0<=ny<3:
+            ni = nx*3+ny; lst = list(s); lst[i], lst[ni] = lst[ni], lst[i]
+            res.append(''.join(lst))
+    return res
+
+def solve(start):
+    q = [(h(start), 0, start, [])]; seen = set()
+    while q:
+        _, g, s, p = heapq.heappop(q)
+        if s == goal: return p + [s]
+        if s in seen: continue
+        seen.add(s)
+        for n in neighbors(s):
+            heapq.heappush(q, (g+1+h(n), g+1, n, p+[s]))
+
+# Example run
+start = '724506831'
+for step in solve(start):
+    print('\n'.join([step[i:i+3] for i in range(0,9,3)]), '\n')
