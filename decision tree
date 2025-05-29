@@ -1,0 +1,37 @@
+from collections import Counter
+import math
+
+def entropy(data):
+    total = len(data)
+    counts = Counter([d[-1] for d in data])
+    return -sum((c/total)*math.log2(c/total) for c in counts.values())
+
+def best_split(data):
+    features = len(data[0]) - 1
+    gains = []
+    for i in range(features):
+        values = set(row[i] for row in data)
+        subsets = [[row for row in data if row[i] == v] for v in values]
+        e = sum(len(s)/len(data)*entropy(s) for s in subsets)
+        gains.append((entropy(data)-e, i))
+    return max(gains)[1]
+
+def id3(data):
+    labels = [d[-1] for d in data]
+    if labels.count(labels[0]) == len(labels): return labels[0]
+    split = best_split(data)
+    tree = {split: {}}
+    for val in set(d[split] for d in data):
+        subset = [d for d in data if d[split] == val]
+        tree[split][val] = id3(subset)
+    return tree
+
+data = [
+    ['Sunny', 'Hot', 'No'],
+    ['Sunny', 'Cool', 'Yes'],
+    ['Rain', 'Cool', 'Yes'],
+    ['Rain', 'Hot', 'No'],
+    ['Overcast', 'Hot', 'Yes']
+]
+
+print(id3(data))
