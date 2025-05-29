@@ -1,0 +1,18 @@
+from collections import deque
+
+def water_jug(capA, capB, goal):
+    visited = set()
+    q = deque([(0,0)])
+    while q:
+        a,b = q.popleft()
+        if (a,b) in visited: continue
+        visited.add((a,b))
+        print(a,b)
+        if a == goal: return
+        q.extend([
+            (capA,b), (a,capB), (0,b), (a,0),
+            (a - min(a, capB-b), b + min(a, capB-b)),
+            (a + min(b, capA - a), b - min(b, capA - a))
+        ])
+
+water_jug(4,3,2)
